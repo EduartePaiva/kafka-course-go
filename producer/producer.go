@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -37,11 +36,19 @@ func PushCommentToQueue(topic string, message []byte) error {
 	if err != nil {
 		return err
 	}
+	defer producer.Close()
 
-	producer.SendMessage(&sarama.ProducerMessage{
+	msg := &sarama.ProducerMessage{
 		Topic: "comments",
-		Value: bytes.NewReader(message),
-	})
+		Value: sarama.StringEncoder(message),
+	}
+
+	partition, offset, err := producer.SendMessage(msg)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Message is stored in topic(%s)/partition(%d)/offset(%d)", topic, partition, offset)
 
 	return nil
 }
