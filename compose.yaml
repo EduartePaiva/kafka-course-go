@@ -60,7 +60,7 @@ services:
       KAFKA_NUM_PARTITIONS: 1
 
     volumes:
-      - ./docker/kafka_data:/var/lib/kafka/data
+      - kafka_data:/var/lib/kafka/data
   kafka-ui:
     image: ghcr.io/kafbat/kafka-ui:latest
     container_name: kafka-ui

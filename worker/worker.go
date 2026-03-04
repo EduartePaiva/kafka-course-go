@@ -11,7 +11,7 @@ import (
 
 func main() {
 	topic := "comments"
-	worker, err := connectConsumer([]string{"localhost:9092"})
+	worker, err := connectConsumer([]string{"localhost:9094"})
 	if err != nil {
 		panic(err)
 	}
