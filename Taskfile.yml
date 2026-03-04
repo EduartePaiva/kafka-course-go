@@ -10,6 +10,11 @@ tasks:
     desc: run the cmd/kafka-course-go application
     cmds:
       - go run ./cmd/kafka-course-go
+  update:
+    desc: update all packages to the latest version in the project
+    cmds:
+      - go get -u ./...
+      - go mod tidy
 
   tidy:
     desc: format all .go files, and tidy and vendor module dependencies
