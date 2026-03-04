@@ -1,21 +1,23 @@
 services:
-  broker:
+  kafka:
     image: apache/kafka:latest
-    container_name: broker
+    container_name: kafka
     ports:
-      - 9092:9092
-      - 9094:9094
+      - "9092:9092"
+      - "9094:9094"
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
+      # Unique Kafka cluster identifier (required for KRaft mode)
+      KAFKA_CLUSTER_ID: "kafka-course-cluster-1"
 
       #################################
       # Controller Quorum config (Raft)
       #################################
       # List of controllers nodes that form the Raft quorum
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       # Listener name used by controllers for internal Raft communication
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
 
       #################################
       # Network Listeners (internal, external & controllers)
@@ -29,8 +31,8 @@ services:
       # Internal (Docker containers): broker:9092
       # External (host machine): localhost:9094
       KAFKA_ADVERTISED_LISTENERS: >
-        PLAINTEXT://broker:9092,
-        EXTERNAL://localhost:9094,
+        PLAINTEXT://kafka:9092,
+        EXTERNAL://localhost:9094
       # Maps listener names to their security protocols
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: >
         CONTROLLER:PLAINTEXT,
@@ -65,10 +67,10 @@ services:
     ports:
       - "8070:8080"
     depends_on:
-      - broker
+      - kafka
     environment:
-      KAFKA_CLUSTER_0_NAME: local
-      KAFKA_CLUSTER_0_BOOTSTRAPSERVERS: broker:9092 # use internal docker name
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092 # use internal docker name
       DYNAMIC_CONFIG_ENABLED: "true"
     restart: unless-stopped
 
