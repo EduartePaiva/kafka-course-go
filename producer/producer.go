@@ -31,7 +31,7 @@ func ConnectToProducer(brokers []string) (sarama.SyncProducer, error) {
 }
 
 func PushCommentToQueue(topic string, message []byte) error {
-	brokersUrl := []string{"localhost:29092"}
+	brokersUrl := []string{"localhost:9092"}
 	producer, err := ConnectToProducer(brokersUrl)
 	if err != nil {
 		return err
@@ -39,7 +39,7 @@ func PushCommentToQueue(topic string, message []byte) error {
 	defer producer.Close()
 
 	msg := &sarama.ProducerMessage{
-		Topic: "comments",
+		Topic: topic,
 		Value: sarama.StringEncoder(message),
 	}
 
@@ -48,7 +48,7 @@ func PushCommentToQueue(topic string, message []byte) error {
 		return err
 	}
 
-	fmt.Println("Message is stored in topic(%s)/partition(%d)/offset(%d)", topic, partition, offset)
+	fmt.Printf("Message is stored in topic(%s)/partition(%d)/offset(%d)", topic, partition, offset)
 
 	return nil
 }
@@ -75,7 +75,7 @@ func createComment(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(&fiber.Map{
 			"success": false,
-			"message": fmt.Sprint("failed to push to queue %s", err),
+			"message": fmt.Sprintf("failed to push to queue %s", err),
 		})
 	}
 

@@ -11,7 +11,7 @@ import (
 
 func main() {
 	topic := "comments"
-	worker, err := connectConsumer([]string{"localhost:29092"})
+	worker, err := connectConsumer([]string{"localhost:9092"})
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +36,7 @@ func main() {
 				fmt.Println(err)
 			case msg := <-consumer.Messages():
 				msgCount++
-				fmt.Println("received message count: %d | Topic (%s) | Message %s", msgCount, msg.Topic, msg.Value)
+				fmt.Printf("received message count: %d | Topic (%s) | Message %s \n", msgCount, msg.Topic, msg.Value)
 			case <-sigchan:
 				fmt.Println("Interruption detected")
 				doneCH <- struct{}{}
